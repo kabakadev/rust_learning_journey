@@ -1,0 +1,58 @@
+name: Verify Rust Progress
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'chapter_*/**' # Only trigger if a chapter folder changes
+
+jobs:
+  check-code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2 # Necessary to compare commits and find changed files
+
+      - name: Detect Changed Chapter
+        id: detect
+        shell: bash
+        run: |
+          # 1. Find the first folder starting with "chapter_" that was modified
+          CHANGED_FILE=$(git diff --name-only HEAD^ HEAD | grep "chapter_" | head -n 1)
+          
+          if [ -z "$CHANGED_FILE" ]; then
+            echo "No chapter changes detected."
+            echo "chapter=none" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # 2. Extract just the directory name (e.g., chapter_01_hello_world)
+          CHAPTER=$(echo $CHANGED_FILE | cut -d'/' -f1)
+          
+          echo "Detected change in: $CHAPTER"
+          echo "chapter=$CHAPTER" >> $GITHUB_OUTPUT
+
+      - name: Install Rust Toolchain
+        if: steps.detect.outputs.chapter != 'none'
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+
+      - name: Run Tests
+        if: steps.detect.outputs.chapter != 'none'
+        run: |
+          echo "Running tests for ${{ steps.detect.outputs.chapter }}..."
+          cd ${{ steps.detect.outputs.chapter }}
+          cargo test --verbose
+
+      - name: Notify Termux Server
+        if: success() && steps.detect.outputs.chapter != 'none'
+        run: |
+          echo "Tests Passed! Notifying server..."
+          curl -X POST https://ian-dev.top/api/update-progress \
+          -H "Content-Type: application/json" \
+          -H "x-api-key: ${{ secrets.API_KEY }}" \
+          -d "{\"chapter\": \"${{ steps.detect.outputs.chapter }}\", \"passed\": true}"
