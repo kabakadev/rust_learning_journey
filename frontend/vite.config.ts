@@ -6,6 +6,7 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  base: "/rust_learning_journey/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
