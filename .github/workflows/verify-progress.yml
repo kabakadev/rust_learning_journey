@@ -2,9 +2,12 @@ name: Verify Rust Progress
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
-      - 'chapter_*/**' # Only trigger if a chapter folder changes
+      - "chapter_*/**" # Watch Chapters
+      - "quest_*/**" # Watch Side Quests
+      - "Cargo.toml" # Watch the Workspace Config
+      - "Cargo.lock" # Watch Dependencies
 
 jobs:
   check-code:
@@ -13,33 +16,31 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 2 # Necessary to compare commits and find changed files
+          fetch-depth: 2
 
       - name: Detect Changed Chapter
         id: detect
         shell: bash
         run: |
-          # 1. Find the first folder starting with "chapter_" that was modified
-          CHANGED_FILE=$(git diff --name-only HEAD^ HEAD | grep "chapter_" | head -n 1)
-          
+          # 1. Find modified chapter OR quest folders
+          # "|| true" prevents the script from crashing if grep finds nothing
+          CHANGED_FILE=$(git diff --name-only HEAD^ HEAD | grep -E "(chapter_|quest_)" | head -n 1 || true)
+
           if [ -z "$CHANGED_FILE" ]; then
-            echo "No chapter changes detected."
+            echo "No specific chapter code changed (maybe just Cargo.toml?)."
             echo "chapter=none" >> $GITHUB_OUTPUT
             exit 0
           fi
-          
-          # 2. Extract just the directory name (e.g., chapter_01_hello_world)
+
+          # 2. Extract just the directory name (e.g., chapter_01... or quest_01...)
           CHAPTER=$(echo $CHANGED_FILE | cut -d'/' -f1)
-          
+
           echo "Detected change in: $CHAPTER"
           echo "chapter=$CHAPTER" >> $GITHUB_OUTPUT
 
       - name: Install Rust Toolchain
         if: steps.detect.outputs.chapter != 'none'
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          profile: minimal
+        uses: dtolnay/rust-toolchain@stable # Updated to the modern reliable action
 
       - name: Run Tests
         if: steps.detect.outputs.chapter != 'none'
