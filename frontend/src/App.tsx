@@ -7,17 +7,15 @@ import {
   Flame,
   CheckCircle2,
   Lock,
-  Terminal,
   RefreshCw,
   Zap,
   Brain,
   LayoutDashboard,
-  Target,
   ChevronDown,
   ChevronUp,
   BookOpen,
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
