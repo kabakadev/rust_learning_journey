@@ -1,16 +1,21 @@
 name: Deploy React Site
 
 on:
+  # Trigger on push to frontend
   push:
     branches: ["main"]
     paths:
-      - "frontend/**" # Only run if frontend changes
+      - "frontend/**"
+
+  # Trigger manually from the Actions tab (The Fix)
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# ... (keep the rest of the file exactly the same)
 concurrency:
   group: "pages"
   cancel-in-progress: true
