@@ -1,6 +1,6 @@
 [workspace]
 members = [
     "chapter_01_hello_world",
-    "chapter_02_guessing_game",
+    "chapter_02_guessing_game", "chapter_03_01_variables_and_mutability",
 ]
 resolver = "2"
