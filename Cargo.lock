@@ -13,7 +13,7 @@ name = "chapter_01_01_installation"
 version = "0.1.0"
 
 [[package]]
-name = "chapter_01_hello_world"
+name = "chapter_01_02_hello_world"
 version = "0.1.0"
 
 [[package]]
@@ -61,6 +61,10 @@ checksum = "5ee95bc4ef87b8d5ba32e8b7714ccc834865276eab0aed5c9958d00ec45f49e8"
 dependencies = [
  "unicode-ident",
 ]
+
+[[package]]
+name = "quest_00_placeholder"
+version = "0.1.0"
 
 [[package]]
 name = "quote"

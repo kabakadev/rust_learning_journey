@@ -1,6 +1,12 @@
 [workspace]
-members = ["chapter_01_01_installation",
-    "chapter_01_hello_world",
-    "chapter_02_guessing_game", "chapter_03_01_variables_and_mutability",
-]
 resolver = "2"
+
+# This wildcard pattern automatically finds ANY folder starting with 'chapter_'
+# No more manual editing. No more dead links.
+members = [
+    "chapter_*",
+    "quest_*"
+]
+exclude = [
+    "frontend"
+]
