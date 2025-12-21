@@ -38,42 +38,105 @@ interface UserStats {
 
 // --- QUEST DATA DICTIONARY ---
 // This is where you define the instructions for your side quests
+// --- QUEST DATA DICTIONARY ---
 const QUEST_DATA: Record<
   string,
   { title: string; objective: string; criteria: string[] }
 > = {
-  // Example Quests for Chapter 3 (Common Rust Book Exercises)
-  quest_03_01_fahrenheit_celsius: {
-    title: "The Temperature Converter",
+  // --- Chapter 1: Setup ---
+  quest_01_01_hello_universe: {
+    title: "Hello, Universe!",
+    objective:
+      "Go beyond 'Hello World'. Create a program that prints a formatted welcome message using variables.",
+    criteria: [
+      "Store a name in a variable.",
+      "Print 'Hello, Universe! My name is [YourName]'.",
+      "Use 'cargo run' to verify the output.",
+    ],
+  },
+
+  // --- Chapter 2: Guessing Game ---
+  quest_02_01_reverse_guessing_game: {
+    title: "The Reverse Guessing Game",
+    objective:
+      "Flip the script! You pick a number, and the computer tries to guess it.",
+    criteria: [
+      "User thinks of a number between 1-100.",
+      "Computer makes a guess.",
+      "User inputs 'high', 'low', or 'correct'.",
+      "Computer adjusts its range (Binary Search logic) until it wins.",
+    ],
+  },
+
+  // --- Chapter 3: Common Concepts ---
+  quest_03_01_temperature_converter: {
+    title: "Thermostat Logic",
     objective:
       "Build a CLI tool that converts temperatures between Fahrenheit and Celsius.",
     criteria: [
       "Prompt user for a temperature value.",
       "Ask user for the unit to convert to (F or C).",
-      "Print the converted result.",
-      "Handle invalid inputs gracefully.",
+      "Print the converted result using the formula: (C * 9/5) + 32.",
+      "Handle invalid inputs (non-numbers) gracefully.",
     ],
   },
-  quest_03_02_fibonacci: {
-    title: "Fibonacci Generator",
-    objective: "Generate the nth Fibonacci number.",
+  quest_03_02_fibonacci_nth: {
+    title: "The Fibonacci Sequence",
+    objective: "Generate the nth Fibonacci number based on user input.",
     criteria: [
       "Accept 'n' as user input.",
-      "Calculate the nth number in the sequence.",
-      "Optimize for speed (optional: recursive vs iterative).",
+      "Calculate the nth number (e.g., input 5 -> output 5, input 10 -> output 55).",
+      "Try to handle large numbers without crashing (u32 vs u64).",
     ],
   },
-  quest_03_03_twelve_days: {
+  quest_03_03_twelve_days_of_christmas: {
     title: "The 12 Days of Christmas",
-    objective: "Print the lyrics to the Christmas carol using loops.",
+    objective:
+      "Print the lyrics to the Christmas carol using loops and arrays.",
     criteria: [
-      "Use an array for the gifts.",
+      "Use an array/vector to store the gifts ('A partridge', 'Two turtle doves'...).",
       "Loop through days 1 to 12.",
-      "Ensure grammatical correctness (e.g., 'A partridge' vs 'Two turtle doves').",
+      "Print the cumulative lyrics for each day correctly.",
+    ],
+  },
+
+  // --- Chapter 4: Ownership ---
+  quest_04_01_string_slicer_tool: {
+    title: "The Slicer",
+    objective:
+      "Demonstrate ownership by creating a function that manually finds the first word in a string.",
+    criteria: [
+      "Function accepts a &String.",
+      "Return a string slice (&str) of the first word.",
+      "If no spaces exist, return the whole string.",
+      "Do NOT use the built-in split_whitespace() for the logic—iterate over bytes manually!",
+    ],
+  },
+
+  // --- Chapter 5: Structs ---
+  quest_05_01_rectangle_area_calculator: {
+    title: "Struct Architect",
+    objective: "Model a physical object using Structs and Methods.",
+    criteria: [
+      "Define a 'Rectangle' struct with width and height.",
+      "Implement a method .area() that returns the size.",
+      "Implement a method .can_hold(&other) that returns true if one rect fits inside another.",
+    ],
+  },
+
+  // --- Chapter 6: Enums ---
+  quest_06_01_coin_sorting_machine: {
+    title: "The Coin Sorter",
+    objective:
+      "Use Enums to model currency and pattern matching to count value.",
+    criteria: [
+      "Define an Enum called 'Coin' (Penny, Nickel, Dime, Quarter).",
+      "Create a function that takes a Coin and returns its value in cents.",
+      "Add a special variant 'Quarter(UsState)' that holds a state name.",
+      "Print the state name only when a Quarter is processed.",
     ],
   },
 };
-
 function App() {
   const { width, height } = useWindowSize();
   const [stats, setStats] = useState<UserStats>({
