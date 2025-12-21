@@ -16,6 +16,8 @@ import {
   BookOpen,
   Copy,
   Check,
+  Info, // <--- NEW IMPORT
+  ArrowRight,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +36,44 @@ interface UserStats {
   last_push_date: string | null;
 }
 
+// --- QUEST DATA DICTIONARY ---
+// This is where you define the instructions for your side quests
+const QUEST_DATA: Record<
+  string,
+  { title: string; objective: string; criteria: string[] }
+> = {
+  // Example Quests for Chapter 3 (Common Rust Book Exercises)
+  quest_03_01_fahrenheit_celsius: {
+    title: "The Temperature Converter",
+    objective:
+      "Build a CLI tool that converts temperatures between Fahrenheit and Celsius.",
+    criteria: [
+      "Prompt user for a temperature value.",
+      "Ask user for the unit to convert to (F or C).",
+      "Print the converted result.",
+      "Handle invalid inputs gracefully.",
+    ],
+  },
+  quest_03_02_fibonacci: {
+    title: "Fibonacci Generator",
+    objective: "Generate the nth Fibonacci number.",
+    criteria: [
+      "Accept 'n' as user input.",
+      "Calculate the nth number in the sequence.",
+      "Optimize for speed (optional: recursive vs iterative).",
+    ],
+  },
+  quest_03_03_twelve_days: {
+    title: "The 12 Days of Christmas",
+    objective: "Print the lyrics to the Christmas carol using loops.",
+    criteria: [
+      "Use an array for the gifts.",
+      "Loop through days 1 to 12.",
+      "Ensure grammatical correctness (e.g., 'A partridge' vs 'Two turtle doves').",
+    ],
+  },
+};
+
 function App() {
   const { width, height } = useWindowSize();
   const [stats, setStats] = useState<UserStats>({
@@ -44,9 +84,11 @@ function App() {
   const [modules, setModules] = useState<ChapterGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedModule, setExpandedModule] = useState<string | null>(null);
-  const [showConfetti, setShowConfetti] = useState(false);
 
-  // New State for "Copied!" feedback
+  // NEW: Track which quest details are currently open
+  const [expandedQuest, setExpandedQuest] = useState<string | null>(null);
+
+  const [showConfetti, setShowConfetti] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const levelInfo = calculateLevel(stats.total_xp);
@@ -100,13 +142,9 @@ function App() {
     fetchData();
   }, []);
 
-  // --- NEW: Copy Command Logic ---
   const copyCommand = (chapterName: string) => {
-    // Generates: cargo new chapter_03_01_variables
     const command = `cargo new ${chapterName}`;
     navigator.clipboard.writeText(command);
-
-    // Show checkmark for 2 seconds
     setCopiedId(chapterName);
     setTimeout(() => setCopiedId(null), 2000);
   };
@@ -326,14 +364,12 @@ function App() {
                                     .slice(3)
                                     .join(" ")}
                                 </div>
-                                {/* Show Raw Name for reference */}
                                 <div className="text-[10px] font-mono text-slate-500 mt-0.5">
                                   {sec.chapter_name}
                                 </div>
                               </div>
                             </div>
 
-                            {/* COPY BUTTON (Only if not completed to save space, or always if you prefer) */}
                             {!sec.is_completed && (
                               <Button
                                 size="icon"
@@ -360,66 +396,138 @@ function App() {
                             <Zap className="w-3 h-3" /> Side Quests
                           </h4>
                           <div className="grid grid-cols-1 gap-3">
-                            {module.quests.map((quest, i) => (
-                              <div
-                                key={i}
-                                className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
-                                  quest.is_completed
-                                    ? "bg-yellow-500/10 border-yellow-500/20"
-                                    : "bg-yellow-900/5 border-yellow-500/10 hover:border-yellow-500/30"
-                                }`}
-                              >
-                                <div className="flex items-center gap-3">
-                                  {quest.is_completed ? (
-                                    <Trophy className="w-4 h-4 text-yellow-500" />
-                                  ) : (
-                                    <Lock className="w-4 h-4 text-yellow-700" />
-                                  )}
-                                  <div>
-                                    <div
-                                      className={`text-sm font-medium ${
-                                        quest.is_completed
-                                          ? "text-yellow-100"
-                                          : "text-yellow-500/70"
-                                      }`}
-                                    >
-                                      {quest.chapter_name
-                                        .split("_")
-                                        .slice(3)
-                                        .join(" ")}
-                                    </div>
-                                    <div className="text-[10px] font-mono text-yellow-500/40 mt-0.5">
-                                      {quest.chapter_name}
-                                    </div>
-                                  </div>
-                                </div>
+                            {module.quests.map((quest, i) => {
+                              const details = QUEST_DATA[quest.chapter_name];
+                              const isExpanded =
+                                expandedQuest === quest.chapter_name;
 
-                                {!quest.is_completed && (
-                                  <div className="flex items-center gap-2">
-                                    <Badge
-                                      variant="outline"
-                                      className="text-[10px] border-yellow-500/20 text-yellow-600 hidden md:block"
-                                    >
-                                      150 XP
-                                    </Badge>
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      className="h-8 w-8 text-yellow-700 hover:text-yellow-400 hover:bg-yellow-900/20"
-                                      onClick={() =>
-                                        copyCommand(quest.chapter_name)
-                                      }
-                                    >
-                                      {copiedId === quest.chapter_name ? (
-                                        <Check className="w-4 h-4" />
+                              return (
+                                <div
+                                  key={i}
+                                  className={`rounded-lg border transition-all overflow-hidden ${
+                                    quest.is_completed
+                                      ? "bg-yellow-500/10 border-yellow-500/20"
+                                      : isExpanded
+                                      ? "bg-yellow-900/10 border-yellow-500/30"
+                                      : "bg-yellow-900/5 border-yellow-500/10 hover:border-yellow-500/30"
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-between p-3">
+                                    <div className="flex items-center gap-3">
+                                      {quest.is_completed ? (
+                                        <Trophy className="w-4 h-4 text-yellow-500" />
                                       ) : (
-                                        <Copy className="w-4 h-4" />
+                                        <Lock className="w-4 h-4 text-yellow-700" />
                                       )}
-                                    </Button>
+                                      <div>
+                                        <div
+                                          className={`text-sm font-medium ${
+                                            quest.is_completed
+                                              ? "text-yellow-100"
+                                              : "text-yellow-500/70"
+                                          }`}
+                                        >
+                                          {/* Use custom title if available, else raw name */}
+                                          {details?.title ||
+                                            quest.chapter_name
+                                              .split("_")
+                                              .slice(3)
+                                              .join(" ")}
+                                        </div>
+                                        <div className="text-[10px] font-mono text-yellow-500/40 mt-0.5">
+                                          {quest.chapter_name}
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    {!quest.is_completed && (
+                                      <div className="flex items-center gap-2">
+                                        {/* INFO BUTTON (Toggles Details) */}
+                                        <Button
+                                          size="icon"
+                                          variant="ghost"
+                                          className={`h-8 w-8 hover:bg-yellow-900/20 ${
+                                            isExpanded
+                                              ? "text-yellow-400 bg-yellow-900/20"
+                                              : "text-yellow-700"
+                                          }`}
+                                          onClick={() =>
+                                            setExpandedQuest(
+                                              isExpanded
+                                                ? null
+                                                : quest.chapter_name
+                                            )
+                                          }
+                                        >
+                                          <Info className="w-4 h-4" />
+                                        </Button>
+
+                                        {/* COPY BUTTON */}
+                                        <Button
+                                          size="icon"
+                                          variant="ghost"
+                                          className="h-8 w-8 text-yellow-700 hover:text-yellow-400 hover:bg-yellow-900/20"
+                                          onClick={() =>
+                                            copyCommand(quest.chapter_name)
+                                          }
+                                        >
+                                          {copiedId === quest.chapter_name ? (
+                                            <Check className="w-4 h-4" />
+                                          ) : (
+                                            <Copy className="w-4 h-4" />
+                                          )}
+                                        </Button>
+                                      </div>
+                                    )}
                                   </div>
-                                )}
-                              </div>
-                            ))}
+
+                                  {/* QUEST BRIEFING PANEL */}
+                                  {isExpanded && !quest.is_completed && (
+                                    <div className="bg-black/40 p-4 border-t border-yellow-500/10 mx-3 mb-3 rounded-lg">
+                                      {details ? (
+                                        <>
+                                          <h5 className="text-yellow-200 font-semibold text-sm mb-2">
+                                            Objective
+                                          </h5>
+                                          <p className="text-slate-400 text-sm mb-4 leading-relaxed">
+                                            {details.objective}
+                                          </p>
+
+                                          <h5 className="text-yellow-200 font-semibold text-sm mb-2">
+                                            Success Criteria
+                                          </h5>
+                                          <ul className="space-y-2">
+                                            {details.criteria.map((c, idx) => (
+                                              <li
+                                                key={idx}
+                                                className="flex items-start gap-2 text-sm text-slate-400"
+                                              >
+                                                <ArrowRight className="w-3.5 h-3.5 mt-0.5 text-yellow-600/50" />
+                                                <span>{c}</span>
+                                              </li>
+                                            ))}
+                                          </ul>
+                                        </>
+                                      ) : (
+                                        <div className="text-slate-500 italic text-sm">
+                                          No briefing available for this mission
+                                          yet. Check the source code!
+                                        </div>
+                                      )}
+
+                                      <div className="mt-4 pt-3 border-t border-white/5 flex justify-end">
+                                        <Badge
+                                          variant="outline"
+                                          className="border-yellow-500/20 text-yellow-600 bg-yellow-900/10"
+                                        >
+                                          Reward: 150 XP
+                                        </Badge>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       )}
