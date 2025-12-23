@@ -7,6 +7,7 @@ fn main(){
 
     let mut low = 1;
     let mut high = 100;
+    let mut guesses = 0;
 
     loop{
         if low > high{
@@ -14,6 +15,7 @@ fn main(){
             break;
         }
         let guess = (low + high) /2;
+        guesses += 1;
         println!("Is your number {}?", guess);
 
         let mut feedback = String::new();
@@ -26,6 +28,8 @@ fn main(){
             "low" => low = guess + 1,
             "correct" => {
                 println!("found it");
+                println!("I guessed it in {} tries!", guesses);
+
                 break;
             }
             _ => println!("please type: high, low or correct"),

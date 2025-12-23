@@ -27,6 +27,8 @@ import {
   isDailyGoalMet,
   groupChapters,
   ChapterGroup,
+  getRank,
+  getHeatmapData,
 } from "./gameLogic";
 
 // --- TYPES ---
@@ -145,6 +147,7 @@ function App() {
     last_push_date: null,
   });
   const [modules, setModules] = useState<ChapterGroup[]>([]);
+  const activityLog = getHeatmapData(modules);
   const [loading, setLoading] = useState(true);
   const [expandedModule, setExpandedModule] = useState<string | null>(null);
 
@@ -155,6 +158,7 @@ function App() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const levelInfo = calculateLevel(stats.total_xp);
+  const rank = getRank(levelInfo.level); // <--- ADD THIS
   const dailyGoalComplete = isDailyGoalMet(stats.last_push_date);
 
   const fetchData = () => {
@@ -227,7 +231,7 @@ function App() {
         />
       )}
 
-      <div className="fixed inset-0 bg-gradient-to-br from-[#0F172A] via-[#1e1b4b] to-[#0F172A] z-0" />
+      <div className="fixed inset-0 bg-linear-to-br from-[#0F172A] via-[#1e1b4b] to-[#0F172A] z-0" />
 
       <div className="relative z-10">
         {/* NAVBAR */}
@@ -252,19 +256,42 @@ function App() {
         <main className="max-w-5xl mx-auto px-6 py-12 space-y-10">
           {/* HERO STATS */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-slate-900/40 backdrop-blur-sm border-white/5 p-6 flex flex-col justify-between">
-              <div className="flex justify-between items-start">
+            <Card className="bg-slate-900/40 backdrop-blur-sm border-white/5 p-6 flex flex-col justify-between relative overflow-hidden group">
+              {/* Subtle background glow based on rank color */}
+              <div
+                className={`absolute top-0 right-0 w-32 h-32 bg-current opacity-5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none ${rank.color.replace(
+                  "text-",
+                  "bg-"
+                )}`}
+              />
+
+              <div className="flex justify-between items-start relative z-10">
                 <div className="p-3 bg-purple-500/10 rounded-xl text-purple-400">
                   <Trophy className="w-6 h-6" />
                 </div>
                 <span className="text-xs font-mono text-slate-500">XP</span>
               </div>
-              <div className="mt-4">
+
+              <div className="mt-4 relative z-10">
                 <div className="text-3xl font-bold text-white">
                   {stats.total_xp}
                 </div>
-                <div className="text-sm text-slate-400">
-                  Level {levelInfo.level}
+
+                {/* NEW RANK DISPLAY */}
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-2xl filter drop-shadow-lg">
+                    {rank.icon}
+                  </span>
+                  <div>
+                    <div
+                      className={`text-xs font-bold uppercase tracking-wider ${rank.color}`}
+                    >
+                      {rank.title}
+                    </div>
+                    <div className="text-[10px] text-slate-500 font-mono">
+                      Level {levelInfo.level}
+                    </div>
+                  </div>
                 </div>
               </div>
             </Card>
@@ -310,7 +337,48 @@ function App() {
               </div>
             </Card>
           </div>
+          {/* CONTRIBUTION HEATMAP */}
+          <div className="w-full bg-slate-900/40 backdrop-blur-sm border border-white/5 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-500/10 rounded-lg">
+                <LayoutDashboard className="w-5 h-5 text-green-400" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white">Activity Log</h3>
+                <p className="text-xs text-slate-500">
+                  Your coding momentum over the last 14 days
+                </p>
+              </div>
+            </div>
 
+            <div className="flex gap-2">
+              {activityLog.map(([date, count], i) => (
+                <div
+                  key={i}
+                  className="flex flex-col items-center gap-1 group relative"
+                >
+                  {/* The Square */}
+                  <div
+                    className={`w-4 h-4 md:w-5 md:h-5 rounded-sm transition-all duration-500 border border-white/5 ${
+                      count === 0
+                        ? "bg-slate-800/50"
+                        : count === 1
+                        ? "bg-green-900 border-green-800"
+                        : count === 2
+                        ? "bg-green-700 border-green-600"
+                        : "bg-green-500 border-green-400 shadow-[0_0_10px_rgba(34,197,94,0.4)]"
+                    }`}
+                  />
+
+                  {/* Tooltip (Visible on Hover) */}
+                  <div className="absolute bottom-8 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-950 border border-white/10 text-xs px-2 py-1 rounded shadow-xl whitespace-nowrap z-20 pointer-events-none">
+                    <span className="text-slate-400">{date}:</span>{" "}
+                    <span className="text-white font-bold">{count} Tasks</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
           {/* CURRICULUM ACCORDION */}
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">

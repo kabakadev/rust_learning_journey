@@ -21,6 +21,13 @@ name = "chapter_01_03_hello_cargo"
 version = "0.1.0"
 
 [[package]]
+name = "chapter_02_00_guessing_game"
+version = "0.1.0"
+dependencies = [
+ "rand",
+]
+
+[[package]]
 name = "chapter_02_guessing_game"
 version = "0.1.0"
 dependencies = [
@@ -29,6 +36,14 @@ dependencies = [
 
 [[package]]
 name = "chapter_03_01_variables_and_mutability"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_03_02_data_types"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_03_03_functions"
 version = "0.1.0"
 
 [[package]]
@@ -69,6 +84,17 @@ dependencies = [
 [[package]]
 name = "quest_00_placeholder"
 version = "0.1.0"
+
+[[package]]
+name = "quest_01_01_hello_universe"
+version = "0.1.0"
+
+[[package]]
+name = "quest_02_01_reverse_guessing_game"
+version = "0.1.0"
+dependencies = [
+ "rand",
+]
 
 [[package]]
 name = "quote"
