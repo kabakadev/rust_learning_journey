@@ -1,0 +1,6 @@
+[package]
+name = "quest_03_01_temperature_converter"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
