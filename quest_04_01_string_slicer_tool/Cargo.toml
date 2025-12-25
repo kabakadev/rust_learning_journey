@@ -1,0 +1,6 @@
+[package]
+name = "quest_04_01_string_slicer_tool"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
