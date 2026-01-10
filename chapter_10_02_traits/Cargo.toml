@@ -1,0 +1,7 @@
+[package]
+name = "chapter_10_02_traits"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aggregator = "0.1.0"
