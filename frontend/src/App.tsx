@@ -6,7 +6,6 @@ import {
   Trophy,
   Flame,
   CheckCircle2,
-  Lock,
   RefreshCw,
   Zap,
   LayoutDashboard,
