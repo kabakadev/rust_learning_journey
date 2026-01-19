@@ -22,3 +22,20 @@ fn first_word(s:&str) -> &str{
     }
     return &s[..]
 }
+
+fn second_word(s:&str) -> &str {
+    let bytes = s.as_bytes();
+    for (i, &item) in bytes.iter().enumerate(){
+        if item == b' '{
+            let rest = &s[i+1..];
+            let new_bytes = rest.as_bytes();
+            for (j,&item) in new_bytes.iter().enumerate(){
+                if item == b' '{
+                    return &rest[..j]
+                }
+            }
+            return &rest[..]
+        }
+    }
+    return &s[..0]
+}

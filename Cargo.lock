@@ -3,6 +3,18 @@
 version = 4
 
 [[package]]
+name = "adder"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "da860ef43d6a9bb0fcd5b152d96cfbc4e57bd2d5834eb92bbfe6847fb23436c7"
+
+[[package]]
+name = "aggregator"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a7ca33746c501dbab6aa04082df32f56b89b2e11103241dde17ba0f769146fd0"
+
+[[package]]
 name = "cfg-if"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -44,6 +56,140 @@ version = "0.1.0"
 
 [[package]]
 name = "chapter_03_03_functions"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_03_04_comments"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_03_05_control_flow"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_04_01_what_is_ownership"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_04_02_references_and_borrowing"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_04_03_slice_type"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_05_01_defining_structs"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_05_02_example_structs_program"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_05_03_methods"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_06_01_defining_enum"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_06_02_match_control_flow"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_06_03_if_let"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_07_01_packages_and_crates"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_07_02_modules_scope_privacy"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_07_03_paths_module_tree"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_07_04_use_keyword"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_07_05_separating_modules"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_08_01_vectors"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_08_02_strings_utf8"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_08_03_hash_maps"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_09_01_panic"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_09_02_result"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_09_03_panic_or_not"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_10_01_generic_data_types"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_10_02_traits"
+version = "0.1.0"
+dependencies = [
+ "aggregator",
+]
+
+[[package]]
+name = "chapter_10_03_lifetimes"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_11_01_writing_tests"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_11_02_running_tests"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_11_03_test_organization"
+version = "0.1.0"
+dependencies = [
+ "adder",
+]
+
+[[package]]
+name = "chapter_12_01_command_line_args"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_12_02_reading_file"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_12_03_refactoring"
+version = "0.1.0"
+
+[[package]]
+name = "chapter_12_04_tdd"
 version = "0.1.0"
 
 [[package]]
@@ -95,6 +241,30 @@ version = "0.1.0"
 dependencies = [
  "rand",
 ]
+
+[[package]]
+name = "quest_03_01_temperature_converter"
+version = "0.1.0"
+
+[[package]]
+name = "quest_03_02_fibonacci_nth"
+version = "0.1.0"
+
+[[package]]
+name = "quest_03_03_twelve_days_of_christmas"
+version = "0.1.0"
+
+[[package]]
+name = "quest_04_01_string_slicer_tool"
+version = "0.1.0"
+
+[[package]]
+name = "quest_05_01_rectangle_area_calculator"
+version = "0.1.0"
+
+[[package]]
+name = "quest_06_01_coin_sorting_machine"
+version = "0.1.0"
 
 [[package]]
 name = "quote"

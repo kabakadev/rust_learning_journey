@@ -149,7 +149,6 @@ export const getRank = (level: number): RankInfo => {
     };
   return { title: "The Ferriscian", color: "text-red-500", icon: "🦀" };
 };
-// ... (keep existing code)
 
 // --- HEATMAP LOGIC ---
 export const getHeatmapData = (modules: ChapterGroup[]) => {
@@ -182,4 +181,52 @@ export const getHeatmapData = (modules: ChapterGroup[]) => {
 
   // Convert to array: [['2023-10-01', 2], ['2023-10-02', 0]...]
   return Object.entries(history);
+};
+// --- SKILL SYSTEM ---
+export interface SkillData {
+  subject: string;
+  A: number; // Current Value
+  fullMark: number; // Max Value (100)
+}
+
+export const calculateSkills = (modules: ChapterGroup[]): SkillData[] => {
+  // 1. Define Categories and which Chapters contribute to them
+  const categories = {
+    "Systems (STR)": ["04", "05", "15", "19", "20"], // Ownership, Structs, Pointers, Advanced
+    "Logic (INT)": ["02", "03", "06", "08", "13"], // Guessing, Concepts, Enums, Collections, Iterators
+    "Arch (WIS)": ["07", "09", "10", "11", "12", "14"], // Crates, Errors, Generics, Tests, I/O
+    "Async (DEX)": ["16", "17", "21"], // Threads, Async, Web Server
+    "Setup (CON)": ["01"], // Installation (Free points)
+  };
+
+  const skills: SkillData[] = Object.entries(categories).map(
+    ([label, chapterIds]) => {
+      // Find all sections that belong to these chapters
+      let totalSections = 0;
+      let completedSections = 0;
+
+      modules.forEach((mod) => {
+        if (chapterIds.includes(mod.id)) {
+          totalSections += mod.sections.length;
+          completedSections += mod.sections.filter(
+            (s) => s.is_completed
+          ).length;
+        }
+      });
+
+      // Avoid division by zero
+      const score =
+        totalSections === 0
+          ? 0
+          : Math.round((completedSections / totalSections) * 100);
+
+      return {
+        subject: label,
+        A: score,
+        fullMark: 100,
+      };
+    }
+  );
+
+  return skills;
 };
