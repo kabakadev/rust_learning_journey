@@ -1,12 +1,9 @@
 fn main(){
-    let mut s = String::from("hello");
-    //scope 1: the writer works alone
-    let r1 = &mut s;
-    r1.push_str(", world"); //
-    println!("{}", r1);
-    //r1 is no longer used after this, so its "lock" on is released
+    let result = create_data();
+    println!("Data: {}", result);
+}
 
-    //scope 2: the reader comes in afterwards
-    let r2 = &s;
-    println!("{}", r2);
+fn create_data() -> String{
+    let s = String::from("vital information");
+    s
 }
